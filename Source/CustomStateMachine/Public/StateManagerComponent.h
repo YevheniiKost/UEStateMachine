@@ -39,7 +39,6 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "State Machine")
 	void SwitchStateByKey(FString Key);
-	void PrintDebugMessage(const FString& Message) const;
 	UFUNCTION(BlueprintCallable, Category = "State Machine")
 	void SwitchState(UStateBase* NewState);
 
@@ -69,4 +68,5 @@ private:
 	bool bInitialized;
 	bool bCanTickState = false;
 	void InitializeStates();
+	void PrintDebugMessage(const FString& Message) const;
 };
