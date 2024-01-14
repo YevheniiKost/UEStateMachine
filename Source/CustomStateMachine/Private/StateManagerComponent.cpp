@@ -14,6 +14,12 @@ void UStateManagerComponent::BeginPlay()
 void UStateManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                            FActorComponentTickFunction* ThisTickFunction)
 {
+	if(!bInitialized)
+	{
+		PrintDebugMessage(FString::Printf(TEXT(" State Manager not initialized!")));
+		return;
+	}
+	
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if (bCanTickState)
 	{
@@ -26,6 +32,12 @@ void UStateManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UStateManagerComponent::SwitchStateByKey(FString Key)
 {
+	if(!bInitialized)
+	{
+		PrintDebugMessage(FString::Printf(TEXT(" State Manager not initialized!")));
+		return;
+	}
+	
 	if (StateMap.Contains(Key))
 	{
 		UStateBase* NewState = StateMap.FindRef(Key);
@@ -40,6 +52,12 @@ void UStateManagerComponent::SwitchStateByKey(FString Key)
 
 void UStateManagerComponent::SwitchState(UStateBase* NewState)
 {
+	if(!bInitialized)
+	{
+		PrintDebugMessage(FString::Printf(TEXT(" State Manager not initialized!")));
+		return;
+	}
+	
 	if (NewState->IsValidLowLevel())
 	{
 		if (!CurrentState)
@@ -85,14 +103,21 @@ void UStateManagerComponent::InitStateManager()
 
 void UStateManagerComponent::InitializeStates()
 {
+	if(!AvailableStates.Num() || bInitialized)
+	{
+		PrintDebugMessage(FString::Printf(TEXT(" No states available!")));
+		return;
+	}
+	
 	for (auto It = AvailableStates.CreateIterator(); It; ++It)
 	{
 		UStateBase* State = NewObject<UStateBase>(this, It->Value);
 		State->StateDisplayName = FName(*It->Key);
 		State->SetStateManager(this);
-		StateMap.Add(It->Key, State);
+		StateMap.Add(State->StateDisplayName.ToString(), State);
 		PrintDebugMessage(FString::Printf(TEXT(" Initialized state: %s"), *State->StateDisplayName.ToString()));
 	}
+	bInitialized = true;
 }
 
 void UStateManagerComponent::PrintDebugMessage(const FString& Message) const

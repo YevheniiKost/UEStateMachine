@@ -6,6 +6,12 @@
 
 class UStateManagerComponent;
 
+/** 
+ * Base class for all states.
+ *  - CanTick: If true, TickState will be called every frame.
+ *  - CanRepeat: If true, the state can be switched to itself.
+ *  - StateDisplayName: The name of the state. Use this name to switch to this state.
+ */
 UCLASS(Blueprintable)
 class CUSTOMSTATEMACHINE_API UStateBase : public UObject
 {
